@@ -15,14 +15,12 @@ try:
 except Exception as e:
     print("Error {}".format(e))
 
-
 class MyDb(object):
 
     def __init__(self, Table_Name='3DGeoposition'):
         self.Table_Name = Table_Name
         self.db = boto3.resource('dynamodb')
         self.table = self.db.Table(Table_Name)
-
         self.client = boto3.client('dynamodb')
 
     @property
@@ -65,12 +63,14 @@ def snodeposition():
     alt0 = 1  # meters
     snodepos=[lat0, lon0,alt0]
     return snodepos
+
 def droneposition():
     lat1 = -33.88891  # deg
     lon1 = 151.12768  # deg
     alt1 = 1  # meters
     dronepos=[lat1, lon1, alt1]
     return dronepos
+
 def obstacleposition():
     sensor = DistanceSensor(echo=18, trigger=17)
     while True:
@@ -83,6 +83,7 @@ def obstacleposition():
         sleep(1)
         obspos=[x1, y1, z1]
         return obspos
+    
 def geoposition():
     print("Start")
     # The local coordinate origin(Point where Ultrasonic radar is placed)
@@ -98,7 +99,6 @@ def geoposition():
     x = pm.geodetic2enu(lat1, lon1, alt1, lat0, lon0, alt0)
     sleep(1)
     sensor = DistanceSensor(echo=18, trigger=17)
-
     while True:
         # Object position detected by Radar
         Dist = sensor.distance * 100
@@ -115,7 +115,6 @@ def geoposition():
 
 def main():
     global counter
-
     threading.Timer(interval=10, function=main).start()
     obj = MyDb()
     Snodeposition = snodeposition()
@@ -126,7 +125,6 @@ def main():
             Obsposition=str(Obsposition), Distance=str(Distance))
     counter = counter + 1
     print("Uploaded on Cloud")
-
 
 if __name__ == "__main__":
     global counter
